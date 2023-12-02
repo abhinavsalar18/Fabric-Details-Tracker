@@ -12,9 +12,14 @@ connectDB();
 
 app.use(express.json());
 
+// app.use(
+//     cors({
+//         origin: [process.env.FRONTEND_BASE_URL, process.env.SERVER_BASE_URL],
+//     })
+// );
 app.use(
     cors({
-        origin: [process.env.FRONTEND_BASE_URL, process.env.SERVER_BASE_URL],
+        origin: "*",
     })
 );
 
