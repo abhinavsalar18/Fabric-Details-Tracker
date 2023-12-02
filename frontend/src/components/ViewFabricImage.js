@@ -45,7 +45,7 @@ const ViewFabricImage = () => {
             </div>
           </div>
         }
-        <div className='flex  flex-wrap mx-4'>
+        <div className='flex  flex-wrap justify-center'>
         {
             fabricData?.map((item) => (
                     <FabricImageCard key={item.fabricName} title={item.fabricName} imageUrl={item.fabricImage} fabricQuantity={item.fabricQuantity} fabricCode={item.fabricCode}/>
