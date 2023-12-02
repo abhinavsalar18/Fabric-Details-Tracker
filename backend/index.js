@@ -26,7 +26,7 @@ app.use(
 
 app.use("/api/v1/details", detailsRouter);
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT || 7000, () => {
     console.log(`Server is running on port: ${process.env.PORT}`);
 });
 
