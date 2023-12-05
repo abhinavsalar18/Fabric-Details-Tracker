@@ -4,15 +4,7 @@ import APIResponse from "../utils/APIResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 const addData = asyncHandler ( async (req, res) => {
-    console.log(req.body);
     const {fabricName, fabricQuantity, fabricImage, fabricCode} = req.body;
-
-    // try{
-        
-    // }
-    // catch(err){
-    //     console.log(err);
-    // }
     if( !fabricImage || !fabricName || !fabricQuantity || !fabricCode){
         throw new APIError(400, "All fields are required!");
     }
@@ -29,7 +21,6 @@ const addData = asyncHandler ( async (req, res) => {
         fabricImage
     });
 
-    console.log("New data added: ",fabricData);
     res.status(201).json(
         new APIResponse(201, fabricData, "Fabric details added!")
     );
@@ -39,11 +30,55 @@ const addData = asyncHandler ( async (req, res) => {
 
 const getAllData = asyncHandler ( async (req, res) => {
     const fabricData = await FabricDetails.find();
-    console.log("All data: ", fabricData);
 
     res.status(200).json(
         new APIResponse(200, fabricData, "all data fetched successfully!")
     )
 });
 
-export {addData, getAllData};
+
+const deleteData = asyncHandler ( async (req, res) => {
+    const dataId = req.params?.id;
+    
+    const fabricData = await FabricDetails.findOne({_id: dataId});
+
+    if(!fabricData){
+        throw new APIError(404, "Data not found!");
+    }
+
+    const response = await FabricDetails.deleteOne({_id: dataId});
+    console.log("Data deleted successfully!", response);
+    res.status(200).json(
+        new APIResponse(200, {data: fabricData, response: response}, "Data deleted successfully!")
+    ); 
+});
+
+const updateData = asyncHandler ( async (req, res) => {
+    const dataId = req.params?.id;
+    const newData = req.body;
+    // const {fabricName, fabricCode, fabricImage, fabricQuantity} = req.body;
+    const filteredData = Object.keys(newData).reduce((acc, key) => {
+        if (newData[key] !== undefined && newData[key] !== null && newData[key] !== "") {
+          acc[key] = newData[key];
+        }
+        return acc;
+      }, {});
+
+    const fabricData = await FabricDetails.findOne({_id: dataId});
+    if(!fabricData){
+        throw new APIError(404, "Data not found!");
+    }
+    
+    const response = await FabricDetails.findOneAndUpdate({_id: dataId},
+        filteredData, 
+        {new: true},
+    );
+    console.log("Data updated successfully!", response);
+    res.status(200).json(
+        new APIResponse(200, response, "Data updated successfully")
+    );
+});
+
+
+
+export {addData, getAllData, deleteData, updateData};
